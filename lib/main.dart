@@ -18,7 +18,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   static const String _title = 'Scotland Yard Advice';
   var _startingPoint = 0;
-  var moves = <Move>{};
+  var _moves = <Move>[];
   var currentAdvice = <int>{};
 
   void _setStartingPoint(String position) {
@@ -27,19 +27,25 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  void _addMove(Move move) {
-    moves.add(move);
+  void _addMove(int index, Move move) {
+    if (_moves.length - 1 < index) {
+      // add move
+      _moves.add(move);
+    } else {
+      _moves[index] = move;
+    }
   }
 
-  void _fetchAdvice() {
+  void _fetchAdvice(int slot) {
     setState(() {
-      print('Advice');
+      print('Advice, based on input from stepper ' + slot.toString());
     });
   }
 
   void _reset() {
     setState(() {
       _startingPoint = 0;
+      _moves.clear();
     });
   }
 
