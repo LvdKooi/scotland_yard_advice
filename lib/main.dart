@@ -28,7 +28,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _addMove(int index, Move move) {
-    if (_moves.length - 1 < index) {
+    if (_moves.isEmpty || _moves.length - 1 < index) {
       // add move
       _moves.add(move);
     } else {
