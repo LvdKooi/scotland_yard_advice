@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:scotland_yard_advice/MeansOfTransportation.dart';
+import 'package:scotland_yard_advice/StepInput.dart';
 
 class MovementStepper extends StatefulWidget {
   final Function submitFunction;
@@ -45,12 +47,17 @@ class _MovementStepperState extends State<MovementStepper> {
     for (var i = 0; i <= _maxSteps; i++) {
       steps.add(Step(
         title: Text('Movement ' + (i + 1).toString()),
-
         content: Container(
             alignment: Alignment.centerLeft,
-            child: Text('Content for Step ' + (i + 1).toString())),
+            child: StepInput(submitFunction: printMeans)),
       ));
     }
     return steps;
+  }
+
+  void printMeans(MeansOfTransportation means) {
+    print(means.name);
+    print('from index ' + _index.toString());
+
   }
 }
