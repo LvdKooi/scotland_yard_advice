@@ -27,6 +27,7 @@ class _StepInputState extends State<StepInput> {
     MeansOfTransportation.values.forEach((element) {
       listTiles.add(ListTile(
           title: Text(element.name),
+          visualDensity: VisualDensity.compact,
           leading: Radio<MeansOfTransportation>(
             value: element,
             groupValue: _means,

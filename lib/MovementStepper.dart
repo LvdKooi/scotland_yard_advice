@@ -17,7 +17,7 @@ class MovementStepper extends StatefulWidget {
 
 class _MovementStepperState extends State<MovementStepper> {
   int _index = 0;
-  int _maxSteps = 3;
+  int _maxSteps = 4;
   final Function submitFunction;
   final Function resetFunction;
 
@@ -57,7 +57,7 @@ class _MovementStepperState extends State<MovementStepper> {
       steps.add(Step(
         title: Text('Movement ' + (i + 1).toString()),
         content: Container(
-            alignment: Alignment.centerLeft,
+            alignment: Alignment.topLeft,
             child: StepInput(submitFunction: printMeans)),
       ));
     }
