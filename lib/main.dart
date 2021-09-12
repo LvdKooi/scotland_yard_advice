@@ -42,7 +42,7 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  void _reset() {
+  void _resetState() {
     setState(() {
       _startingPoint = 0;
       _moves.clear();
@@ -57,7 +57,7 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text(_title),
           actions: [
-            IconButton(onPressed: () => _reset(), icon: Icon(Icons.refresh))
+            IconButton(onPressed: () => _resetState(), icon: Icon(Icons.refresh))
           ],
         ),
         body: Column(
@@ -77,6 +77,7 @@ class _MyAppState extends State<MyApp> {
                 child: _startingPoint != 0
                     ? MovementStepper(
                         submitFunction: _fetchAdvice,
+                        resetFunction: _resetState,
                       )
                     : null),
           ],
