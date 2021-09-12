@@ -54,7 +54,12 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: _title,
       home: Scaffold(
-        appBar: AppBar(title: const Text(_title)),
+        appBar: AppBar(
+          title: const Text(_title),
+          actions: [
+            IconButton(onPressed: () => _reset(), icon: Icon(Icons.refresh))
+          ],
+        ),
         body: Column(
           children: [
             Center(
@@ -74,11 +79,6 @@ class _MyAppState extends State<MyApp> {
                         submitFunction: _fetchAdvice,
                       )
                     : null),
-            Center(
-                child: _startingPoint != 0
-                    ? TextButton(
-                        onPressed: () => _reset(), child: Text('Restart'))
-                    : null)
           ],
         ),
       ),
