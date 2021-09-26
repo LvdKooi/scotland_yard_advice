@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:scotland_yard_advice/MeansOfTransportation.dart';
 import 'package:scotland_yard_advice/StepInput.dart';
 
+import 'Move.dart';
+
 class MovementStepper extends StatefulWidget {
   final Function submitFunction;
   final Function resetFunction;
@@ -25,8 +27,8 @@ class _MovementStepperState extends State<MovementStepper> {
 
   final Function submitFunction;
   final Function resetFunction;
-  var moveMap = new Map();
   var playerPositions = new HashMap<int, int>();
+  var move = MeansOfTransportation.TAXI;
 
   _MovementStepperState(this.submitFunction, this.resetFunction);
 
@@ -67,7 +69,7 @@ class _MovementStepperState extends State<MovementStepper> {
         title: Text('Movement ' + (i + 1).toString()),
         content: Container(
             alignment: Alignment.topLeft,
-            child: StepInput(submitFunction: printMeans)),
+            child: StepInput(submitFunction: (move) => {this.move = move})),
       ));
     }
     return steps;
@@ -88,10 +90,8 @@ class _MovementStepperState extends State<MovementStepper> {
     tfList.add(IconButton(
         onPressed: () => {
               setState(() {
-                var positions = playerPositions.values;
-                print(positions);
-                playerPositions.clear();
-                submitFunction(_index);
+                submitFunction(_index, createMove());
+                resetUserInputState();
                 if (_index != _MAX_STEPS) {
                   _index += 1;
                 }
@@ -102,13 +102,17 @@ class _MovementStepperState extends State<MovementStepper> {
     return tfList;
   }
 
-  void printMeans(MeansOfTransportation means) {
-    print(means.name);
-    print('from index ' + _index.toString());
+  void addPlayerLocation(int player, dynamic location) {
+    playerPositions[player] = int.parse(location);
+    print(playerPositions);
   }
 
-  void addPlayerLocation(int player, dynamic location) {
-    print('adding ' + location);
-    playerPositions[player] = int.parse(location);
+  Move createMove() {
+    return Move(move, playerPositions.values.toSet());
+  }
+
+  void resetUserInputState() {
+    playerPositions.clear();
+    move = MeansOfTransportation.TAXI;
   }
 }

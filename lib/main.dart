@@ -36,12 +36,6 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  void _fetchAdvice(int slot) {
-    setState(() {
-      print('Advice, based on input from stepper ' + slot.toString());
-    });
-  }
-
   void _resetState() {
     setState(() {
       _startingPoint = 0;
@@ -57,7 +51,8 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text(_title),
           actions: [
-            IconButton(onPressed: () => _resetState(), icon: Icon(Icons.refresh))
+            IconButton(
+                onPressed: () => _resetState(), icon: Icon(Icons.refresh))
           ],
         ),
         body: Column(
@@ -76,7 +71,7 @@ class _MyAppState extends State<MyApp> {
             Center(
                 child: _startingPoint != 0
                     ? MovementStepper(
-                        submitFunction: _fetchAdvice,
+                        submitFunction: _addMove,
                         resetFunction: _resetState,
                       )
                     : null),
