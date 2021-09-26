@@ -1,4 +1,7 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:scotland_yard_advice/MeansOfTransportation.dart';
 import 'package:scotland_yard_advice/StepInput.dart';
 
@@ -17,9 +20,13 @@ class MovementStepper extends StatefulWidget {
 
 class _MovementStepperState extends State<MovementStepper> {
   int _index = 0;
-  int _maxSteps = 4;
+  static const int _MAX_STEPS = 4;
+  static const int _MAX_PLAYERS = 5;
+
   final Function submitFunction;
   final Function resetFunction;
+  var moveMap = new Map();
+  var playerPositions = new HashMap<int, int>();
 
   _MovementStepperState(this.submitFunction, this.resetFunction);
 
@@ -32,20 +39,22 @@ class _MovementStepperState extends State<MovementStepper> {
           setState(() {
             _index -= 1;
           });
-        }
-        else {
+        } else {
           setState(() {
             resetFunction();
           });
         }
       },
       onStepContinue: () {
-        setState(() {
-          submitFunction(_index);
-          if (_index != _maxSteps) {
-            _index += 1;
-          }
-        });
+        showDialog(
+            context: context,
+            builder: (context) {
+              return SimpleDialog(title: Text("Player locations"), children: [
+                Column(
+                  children: getPlayerInputs(),
+                )
+              ]);
+            });
       },
       steps: getSteps(),
     );
@@ -53,7 +62,7 @@ class _MovementStepperState extends State<MovementStepper> {
 
   List<Step> getSteps() {
     var steps = <Step>[];
-    for (var i = 0; i <= _maxSteps; i++) {
+    for (var i = 0; i <= _MAX_STEPS; i++) {
       steps.add(Step(
         title: Text('Movement ' + (i + 1).toString()),
         content: Container(
@@ -64,8 +73,42 @@ class _MovementStepperState extends State<MovementStepper> {
     return steps;
   }
 
+  List<Widget> getPlayerInputs() {
+    var tfList = <Widget>[];
+    for (var i = 0; i <= _MAX_PLAYERS; i++) {
+      tfList.add(new TextField(
+          decoration:
+              new InputDecoration(labelText: "Player " + (i + 1).toString()),
+          keyboardType: TextInputType.number,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+          cursorWidth: 3,
+          onChanged: (value) => addPlayerLocation(i + 1, value)));
+    }
+
+    tfList.add(IconButton(
+        onPressed: () => {
+              setState(() {
+                var positions = playerPositions.values;
+                print(positions);
+                playerPositions.clear();
+                submitFunction(_index);
+                if (_index != _MAX_STEPS) {
+                  _index += 1;
+                }
+                Navigator.pop(context, 'Lost');
+              })
+            },
+        icon: Icon(Icons.where_to_vote)));
+    return tfList;
+  }
+
   void printMeans(MeansOfTransportation means) {
     print(means.name);
     print('from index ' + _index.toString());
+  }
+
+  void addPlayerLocation(int player, dynamic location) {
+    print('adding ' + location);
+    playerPositions[player] = int.parse(location);
   }
 }
