@@ -1,3 +1,4 @@
+
 import 'package:scotland_yard_advice/MeansOfTransportation.dart';
 
 class Move {
@@ -5,4 +6,9 @@ class Move {
   final Set<int> playerLocations;
 
   Move(this.meansOfTransportation, this.playerLocations);
+
+  Map<String, dynamic> toJson() => {
+        'meansOfTransportation': meansOfTransportation.name.toUpperCase(),
+        'playerLocations': playerLocations.toList(),
+      };
 }

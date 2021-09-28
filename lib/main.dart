@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'AdviceClient.dart';
 import 'Move.dart';
 import 'MovementStepper.dart';
 
@@ -34,6 +35,12 @@ class _MyAppState extends State<MyApp> {
     } else {
       _moves[index] = move;
     }
+
+    _fetchAdvice();
+  }
+
+  void _fetchAdvice() {
+    getAdvice(_startingPoint, _moves);
   }
 
   void _resetState() {
