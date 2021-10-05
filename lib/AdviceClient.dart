@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
 import 'Move.dart';
 
-void getAdvice(int startingPoint, List<Move> moves) async {
+Future<List<int>> getAdvice(int startingPoint, List<Move> moves) async {
   final response = await http.post(
     Uri.parse('http://10.0.2.2:8080/rest/advice?startingPoint=' +
         startingPoint.toString()),
@@ -14,13 +14,15 @@ void getAdvice(int startingPoint, List<Move> moves) async {
     body: jsonEncode(toJson(moves)),
   );
   if (response.statusCode == 200) {
-    // If the server did return a 201 CREATED response,
-    // then parse the JSON.
-    print("Succesvol teruggekomen");
-    print(response.body);
+    var body = response.body;
+    var adviceList = <int>[];
+
+    body.replaceAll("[", "").replaceAll("]", "").split(",").forEach((element) {
+      adviceList.add(int.parse(element));
+    });
+
+    return adviceList;
   } else {
-    // If the server did not return a 201 CREATED response,
-    // then throw an exception.
     print(response.body);
     throw Exception("HELAAS: " + response.statusCode.toString());
   }

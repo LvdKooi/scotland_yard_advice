@@ -10,14 +10,18 @@ import 'Move.dart';
 class MovementStepper extends StatefulWidget {
   final Function submitFunction;
   final Function resetFunction;
+  final Function getAdviceFunction;
 
   const MovementStepper(
-      {Key? key, required this.submitFunction, required this.resetFunction})
+      {Key? key,
+      required this.submitFunction,
+      required this.resetFunction,
+      required this.getAdviceFunction})
       : super(key: key);
 
   @override
   _MovementStepperState createState() =>
-      _MovementStepperState(submitFunction, resetFunction);
+      _MovementStepperState(submitFunction, resetFunction, getAdviceFunction);
 }
 
 class _MovementStepperState extends State<MovementStepper> {
@@ -27,10 +31,12 @@ class _MovementStepperState extends State<MovementStepper> {
 
   final Function submitFunction;
   final Function resetFunction;
+  final Function getAdviceFunction;
   var playerPositions = new HashMap<int, int>();
   var move = MeansOfTransportation.TAXI;
 
-  _MovementStepperState(this.submitFunction, this.resetFunction);
+  _MovementStepperState(
+      this.submitFunction, this.resetFunction, this.getAdviceFunction);
 
   @override
   Widget build(BuildContext context) {
@@ -92,10 +98,11 @@ class _MovementStepperState extends State<MovementStepper> {
               setState(() {
                 submitFunction(_index, createMove());
                 resetUserInputState();
+                Navigator.pop(context, 'Lost');
+                renderAdvice();
                 if (_index != _MAX_STEPS) {
                   _index += 1;
                 }
-                Navigator.pop(context, 'Lost');
               })
             },
         icon: Icon(Icons.where_to_vote)));
@@ -109,6 +116,29 @@ class _MovementStepperState extends State<MovementStepper> {
 
   Move createMove() {
     return Move(move, playerPositions.values.toSet());
+  }
+
+  Future<void> renderAdvice() async {
+    var currentAdvice = await getAdviceFunction.call();
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return new AlertDialog(
+            title: new Text("Possible locations of Mr. X:"),
+            content: new Text(formatAdvice(currentAdvice)),
+          );
+        });
+  }
+
+  String formatAdvice(List<int> adviceList) {
+    var output = "";
+
+    adviceList.sort();
+    adviceList.forEach((element) {
+      output = output + " " + element.toString();
+    });
+    return output;
   }
 
   void resetUserInputState() {

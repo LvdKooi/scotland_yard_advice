@@ -20,7 +20,7 @@ class _MyAppState extends State<MyApp> {
   static const String _title = 'Scotland Yard Advice';
   var _startingPoint = 0;
   var _moves = <Move>[];
-  var currentAdvice = <int>{};
+  late Future<List<int>> _currentAdvice;
 
   void _setStartingPoint(String position) {
     setState(() {
@@ -30,7 +30,6 @@ class _MyAppState extends State<MyApp> {
 
   void _addMove(int index, Move move) {
     if (_moves.isEmpty || _moves.length - 1 < index) {
-      // add move
       _moves.add(move);
     } else {
       _moves[index] = move;
@@ -39,8 +38,12 @@ class _MyAppState extends State<MyApp> {
     _fetchAdvice();
   }
 
-  void _fetchAdvice() {
-    getAdvice(_startingPoint, _moves);
+  void _fetchAdvice()  {
+    _currentAdvice = getAdvice(_startingPoint, _moves);
+  }
+
+  Future<List<int>> _getAdvice() {
+    return _currentAdvice;
   }
 
   void _resetState() {
@@ -80,6 +83,7 @@ class _MyAppState extends State<MyApp> {
                     ? MovementStepper(
                         submitFunction: _addMove,
                         resetFunction: _resetState,
+                        getAdviceFunction: _getAdvice,
                       )
                     : null),
           ],
