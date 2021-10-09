@@ -100,9 +100,6 @@ class _MovementStepperState extends State<MovementStepper> {
                 resetUserInputState();
                 Navigator.pop(context, 'Lost');
                 renderAdvice();
-                if (_index != _MAX_STEPS) {
-                  _index += 1;
-                }
               })
             },
         icon: Icon(Icons.where_to_vote)));
@@ -119,16 +116,32 @@ class _MovementStepperState extends State<MovementStepper> {
   }
 
   Future<void> renderAdvice() async {
-    var currentAdvice = await getAdviceFunction.call();
+    try {
+      var currentAdvice = await getAdviceFunction.call();
 
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return new AlertDialog(
-            title: new Text("Possible locations of Mr. X:"),
-            content: new Text(formatAdvice(currentAdvice)),
-          );
-        });
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return new AlertDialog(
+              title: new Text("Possible locations of Mr. X:"),
+              content: new Text(formatAdvice(currentAdvice)),
+            );
+          });
+      setState(() {
+        if (_index != _MAX_STEPS) {
+          _index += 1;
+        }
+      });
+    } on Exception catch (e) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return new AlertDialog(
+              title: new Text("Wrong input"),
+              content: new Text(e.toString().replaceAll("Exception: ", "")),
+            );
+          });
+    }
   }
 
   String formatAdvice(List<int> adviceList) {

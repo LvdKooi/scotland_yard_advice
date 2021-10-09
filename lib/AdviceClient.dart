@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
+import 'ErrorDto.dart';
 import 'Move.dart';
 
 Future<List<int>> getAdvice(int startingPoint, List<Move> moves) async {
@@ -22,9 +23,11 @@ Future<List<int>> getAdvice(int startingPoint, List<Move> moves) async {
     });
 
     return adviceList;
+  } else if (response.statusCode >= 400) {
+    var error = ErrorDto.fromJson(jsonDecode(response.body));
+    throw Exception(error.reason);
   } else {
-    print(response.body);
-    throw Exception("HELAAS: " + response.statusCode.toString());
+    throw Exception(response.body);
   }
 }
 
