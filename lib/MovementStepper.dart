@@ -122,10 +122,11 @@ class _MovementStepperState extends State<MovementStepper> {
       showDialog(
           context: context,
           builder: (BuildContext context) {
-            return new AlertDialog(
+            return AbsorbPointer(
+                child: AlertDialog(
               title: new Text("Possible locations of Mr. X:"),
               content: new Text(formatAdvice(currentAdvice)),
-            );
+            ));
           });
       setState(() {
         if (_index != _MAX_STEPS) {
@@ -136,10 +137,11 @@ class _MovementStepperState extends State<MovementStepper> {
       showDialog(
           context: context,
           builder: (BuildContext context) {
-            return new AlertDialog(
+            return AbsorbPointer(
+                child: AlertDialog(
               title: new Text("Wrong input"),
               content: new Text(e.toString().replaceAll("Exception: ", "")),
-            );
+            ));
           });
     }
   }
