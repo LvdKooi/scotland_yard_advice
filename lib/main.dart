@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'AdviceClient.dart';
-import 'Move.dart';
-import 'MovementStepper.dart';
+import 'client/AdviceClient.dart';
+import 'dto/Move.dart';
+import 'widgets/MovementStepper.dart';
 
 void main() {
   runApp(MyApp());

@@ -2,8 +2,9 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-import 'ErrorDto.dart';
-import 'Move.dart';
+import '../dto/ErrorDto.dart';
+import '../dto/Move.dart';
+
 
 Future<List<int>> getAdvice(int startingPoint, List<Move> moves) async {
   final response = await http.post(

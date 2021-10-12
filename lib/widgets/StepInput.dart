@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:scotland_yard_advice/MeansOfTransportation.dart';
+import 'package:scotland_yard_advice/Dto/MeansOfTransportation.dart';
 
 class StepInput extends StatefulWidget {
   final Function submitFunction;

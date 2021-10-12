@@ -1,5 +1,5 @@
 
-import 'package:scotland_yard_advice/MeansOfTransportation.dart';
+import 'package:scotland_yard_advice/Dto/MeansOfTransportation.dart';
 
 class Move {
   final MeansOfTransportation meansOfTransportation;

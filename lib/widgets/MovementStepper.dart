@@ -2,10 +2,11 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:scotland_yard_advice/MeansOfTransportation.dart';
-import 'package:scotland_yard_advice/StepInput.dart';
+import 'package:scotland_yard_advice/Dto/MeansOfTransportation.dart';
+import 'package:scotland_yard_advice/widgets/StepInput.dart';
 
-import 'Move.dart';
+import '../dto/Move.dart';
+import 'FeedbackDialog.dart';
 
 class MovementStepper extends StatefulWidget {
   final Function submitFunction;
@@ -98,7 +99,7 @@ class _MovementStepperState extends State<MovementStepper> {
               setState(() {
                 submitFunction(_index, createMove());
                 resetUserInputState();
-                Navigator.pop(context, 'Lost');
+                Navigator.pop(context);
                 renderAdvice();
               })
             },
@@ -120,13 +121,11 @@ class _MovementStepperState extends State<MovementStepper> {
       var currentAdvice = await getAdviceFunction.call();
 
       showDialog(
+          barrierDismissible: false,
           context: context,
           builder: (BuildContext context) {
-            return AbsorbPointer(
-                child: AlertDialog(
-              title: new Text("Possible locations of Mr. X:"),
-              content: new Text(formatAdvice(currentAdvice)),
-            ));
+            return FeedbackDialog(new Text("Possible locations of Mr. X:"),
+                new Text(formatAdvice(currentAdvice)));
           });
       setState(() {
         if (_index != _MAX_STEPS) {
@@ -135,13 +134,11 @@ class _MovementStepperState extends State<MovementStepper> {
       });
     } on Exception catch (e) {
       showDialog(
+          barrierDismissible: false,
           context: context,
           builder: (BuildContext context) {
-            return AbsorbPointer(
-                child: AlertDialog(
-              title: new Text("Wrong input"),
-              content: new Text(e.toString().replaceAll("Exception: ", "")),
-            ));
+            return FeedbackDialog(new Text("Wrong input"),
+                new Text(e.toString().replaceAll("Exception: ", "")));
           });
     }
   }
