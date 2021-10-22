@@ -3,7 +3,8 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:scotland_yard_advice/Dto/MeansOfTransportation.dart';
-import 'package:scotland_yard_advice/widgets/StepInput.dart';
+import 'package:scotland_yard_advice/exception/WrongInputException.dart';
+import 'package:scotland_yard_advice/widget/StepInput.dart';
 
 import '../dto/Move.dart';
 import 'FeedbackDialog.dart';
@@ -33,8 +34,8 @@ class _MovementStepperState extends State<MovementStepper> {
   final Function submitFunction;
   final Function resetFunction;
   final Function getAdviceFunction;
-  var playerPositions = new HashMap<int, int>();
-  var move = MeansOfTransportation.TAXI;
+  var _playerPositions = new HashMap<int, int>();
+  var _move = MeansOfTransportation.TAXI;
 
   _MovementStepperState(
       this.submitFunction, this.resetFunction, this.getAdviceFunction);
@@ -60,29 +61,29 @@ class _MovementStepperState extends State<MovementStepper> {
             builder: (context) {
               return SimpleDialog(title: Text("Player locations"), children: [
                 Column(
-                  children: getPlayerInputs(),
+                  children: _getPlayerInputs(),
                 )
               ]);
             });
       },
-      steps: getSteps(),
+      steps: _getSteps(),
     );
   }
 
-  List<Step> getSteps() {
+  List<Step> _getSteps() {
     var steps = <Step>[];
     for (var i = 0; i <= _MAX_STEPS; i++) {
       steps.add(Step(
         title: Text('Movement ' + (i + 1).toString()),
         content: Container(
             alignment: Alignment.topLeft,
-            child: StepInput(submitFunction: (move) => {this.move = move})),
+            child: StepInput(submitFunction: (move) => {this._move = move})),
       ));
     }
     return steps;
   }
 
-  List<Widget> getPlayerInputs() {
+  List<Widget> _getPlayerInputs() {
     var tfList = <Widget>[];
     for (var i = 0; i <= _MAX_PLAYERS; i++) {
       tfList.add(new TextField(
@@ -91,32 +92,51 @@ class _MovementStepperState extends State<MovementStepper> {
           keyboardType: TextInputType.number,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           cursorWidth: 3,
-          onChanged: (value) => addPlayerLocation(i + 1, value)));
+          onChanged: (value) => _addPlayerLocation(i + 1, value)));
     }
 
     tfList.add(IconButton(
         onPressed: () => {
               setState(() {
-                submitFunction(_index, createMove());
-                resetUserInputState();
-                Navigator.pop(context);
-                renderAdvice();
+                if (!_isPlayerLocationsDistinct()) {
+                  _showMovementDialog(
+                      context,
+                      "Wrong input",
+                      new Text(
+                          'There are duplicate entries in the player locations. Please check your input.'));
+                } else {
+                  submitFunction(_index, _createMove());
+                  _resetUserInputState();
+                  Navigator.pop(context);
+                  _renderAdvice();
+                }
               })
             },
         icon: Icon(Icons.where_to_vote)));
+
     return tfList;
   }
 
-  void addPlayerLocation(int player, dynamic location) {
-    playerPositions[player] = int.parse(location);
-    print(playerPositions);
+  void _addPlayerLocation(int player, dynamic location) {
+    if (location.isNotEmpty) {
+      var lastAddedNode = int.parse(location);
+      if (lastAddedNode > 199) {
+        _showMovementDialog(
+            context,
+            "Wrong input",
+            new Text(
+                'Invalid position (valid positions are in the range of 1-199).'));
+      } else {
+        _playerPositions[player] = lastAddedNode;
+      }
+    }
   }
 
-  Move createMove() {
-    return Move(move, playerPositions.values.toSet());
+  Move _createMove() {
+    return Move(_move, _playerPositions.values.toSet());
   }
 
-  Future<void> renderAdvice() async {
+  Future<void> _renderAdvice() async {
     try {
       var currentAdvice = await getAdviceFunction.call();
 
@@ -125,25 +145,27 @@ class _MovementStepperState extends State<MovementStepper> {
           context: context,
           builder: (BuildContext context) {
             return FeedbackDialog(new Text("Possible locations of Mr. X:"),
-                new Text(formatAdvice(currentAdvice)));
+                new Text(_formatAdvice(currentAdvice)));
           });
       setState(() {
         if (_index != _MAX_STEPS) {
           _index += 1;
         }
       });
-    } on Exception catch (e) {
+    } on WrongInputException catch (e) {
       showDialog(
           barrierDismissible: false,
           context: context,
           builder: (BuildContext context) {
-            return FeedbackDialog(new Text("Wrong input"),
-                new Text(e.toString().replaceAll("Exception: ", "")));
+            return FeedbackDialog(new Text("Wrong input"), new Text(e.cause));
           });
+    } on Exception catch (e) {
+      _showMovementDialog(context, "Error",
+          new Text(e.toString().replaceAll("Exception: ", "")));
     }
   }
 
-  String formatAdvice(List<int> adviceList) {
+  String _formatAdvice(List<int> adviceList) {
     var output = "";
 
     adviceList.sort();
@@ -153,8 +175,30 @@ class _MovementStepperState extends State<MovementStepper> {
     return output;
   }
 
-  void resetUserInputState() {
-    playerPositions.clear();
-    move = MeansOfTransportation.TAXI;
+  void _resetUserInputState() {
+    _playerPositions.clear();
+    _move = MeansOfTransportation.TAXI;
+  }
+
+  bool _isPlayerLocationsDistinct() {
+    var set = new HashSet<int>();
+    var isDistinct = true;
+
+    _playerPositions.values.forEach((element) {
+      if (set.add(element) == false) {
+        isDistinct = false;
+      }
+    });
+
+    return isDistinct;
+  }
+
+  void _showMovementDialog(BuildContext context, String title, Text content) {
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
+          return FeedbackDialog(new Text(title), content);
+        });
   }
 }

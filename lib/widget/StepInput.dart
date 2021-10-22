@@ -18,10 +18,10 @@ class _StepInputState extends State<StepInput> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: getListTiles());
+    return Column(children: _getListTiles());
   }
 
-  getListTiles() {
+  _getListTiles() {
     var listTiles = <Widget>[];
 
     MeansOfTransportation.values.forEach((element) {

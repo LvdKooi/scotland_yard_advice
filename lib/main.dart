@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'client/AdviceClient.dart';
 import 'dto/Move.dart';
-import 'widgets/MovementStepper.dart';
+import 'widget/MovementStepper.dart';
 
 void main() {
   runApp(MyApp());
@@ -20,11 +20,17 @@ class _MyAppState extends State<MyApp> {
   static const String _title = 'Scotland Yard Advice';
   var _startingPoint = 0;
   var _moves = <Move>[];
+  bool _validate = false;
   late Future<List<int>> _currentAdvice;
 
   void _setStartingPoint(String position) {
     setState(() {
-      _startingPoint = int.parse(position);
+      if (position.isEmpty || int.parse(position) > 199) {
+        _validate = true;
+      } else {
+        _validate = false;
+        _startingPoint = int.parse(position);
+      }
     });
   }
 
@@ -38,7 +44,7 @@ class _MyAppState extends State<MyApp> {
     _fetchAdvice();
   }
 
-  void _fetchAdvice()  {
+  void _fetchAdvice() {
     _currentAdvice = getAdvice(_startingPoint, _moves);
   }
 
@@ -71,7 +77,11 @@ class _MyAppState extends State<MyApp> {
                 child: _startingPoint == 0
                     ? new TextField(
                         decoration: new InputDecoration(
-                            labelText: "Last known position of Mr. X."),
+                          labelText: "Last known position of Mr. X.",
+                          errorText: _validate
+                              ? 'Invalid position (valid positions are in the range of 1-199).'
+                              : null,
+                        ),
                         keyboardType: TextInputType.number,
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly

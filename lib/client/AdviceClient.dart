@@ -1,15 +1,16 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:scotland_yard_advice/exception/WrongInputException.dart';
 
 import '../dto/ErrorDto.dart';
 import '../dto/Move.dart';
 
-
 Future<List<int>> getAdvice(int startingPoint, List<Move> moves) async {
   final response = await http.post(
-    Uri.parse('http://10.0.2.2:8080/rest/advice?startingPoint=' +
-        startingPoint.toString()),
+    Uri.parse(
+        'http://scotland-yard-advice-dev.eu-west-3.elasticbeanstalk.com/rest/advice?startingPoint=' +
+            startingPoint.toString()),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },
@@ -24,9 +25,9 @@ Future<List<int>> getAdvice(int startingPoint, List<Move> moves) async {
     });
 
     return adviceList;
-  } else if (response.statusCode >= 400) {
+  } else if (response.statusCode == 400) {
     var error = ErrorDto.fromJson(jsonDecode(response.body));
-    throw Exception(error.reason);
+    throw WrongInputException(error.reason);
   } else {
     throw Exception(response.body);
   }
@@ -35,7 +36,6 @@ Future<List<int>> getAdvice(int startingPoint, List<Move> moves) async {
 List<Map<String, dynamic>> toJson(List<Move> move) {
   List<Map<String, dynamic>> movesList = [];
   move.forEach((element) {
-    print(element.toJson());
     movesList.add(element.toJson());
   });
 
