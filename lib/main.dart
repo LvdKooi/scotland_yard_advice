@@ -64,41 +64,42 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: _title,
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text(_title),
-          actions: [
-            IconButton(
-                onPressed: () => _resetState(), icon: Icon(Icons.refresh))
-          ],
-        ),
-        body: Column(
-          children: [
-            Center(
-                child: _startingPoint == 0
-                    ? new TextField(
-                        decoration: new InputDecoration(
-                          labelText: "Last known position of Mr. X.",
-                          errorText: _validate
-                              ? 'Invalid position (valid positions are in the range of 1-199).'
-                              : null,
-                        ),
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
-                        onSubmitted: _setStartingPoint)
-                    : null),
-            Center(
-                child: _startingPoint != 0
-                    ? MovementStepper(
-                        submitFunction: _addMove,
-                        resetFunction: _resetState,
-                        getAdviceFunction: _getAdvice,
-                      )
-                    : null),
-          ],
-        ),
-      ),
+          appBar: AppBar(
+            title: const Text(_title),
+            actions: [
+              IconButton(
+                  onPressed: () => _resetState(), icon: Icon(Icons.refresh))
+            ],
+          ),
+          body: ListView(children: [
+            Column(
+              children: [
+                Center(
+                    child: _startingPoint == 0
+                        ? new TextField(
+                            decoration: new InputDecoration(
+                              labelText: "Last known position of Mr. X.",
+                              errorText: _validate
+                                  ? 'Invalid position (valid positions are in the range of 1-199).'
+                                  : null,
+                            ),
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            onSubmitted: _setStartingPoint)
+                        : null),
+                Center(
+                    child: _startingPoint != 0
+                        ? MovementStepper(
+                            submitFunction: _addMove,
+                            resetFunction: _resetState,
+                            getAdviceFunction: _getAdvice,
+                          )
+                        : null),
+              ],
+            ),
+          ])),
     );
   }
 }
