@@ -87,8 +87,15 @@ class _MovementStepperState extends State<MovementStepper> {
     var tfList = <Widget>[];
     for (var i = 0; i <= _MAX_PLAYERS; i++) {
       tfList.add(new TextField(
-          decoration:
-              new InputDecoration(labelText: "Player " + (i + 1).toString()),
+          cursorColor: Colors.white,
+          decoration: new InputDecoration(
+              labelText: "Player " + (i + 1).toString(),
+              labelStyle: TextStyle(color: Colors.grey),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: const BorderSide(
+                  color: Colors.white,
+                ),
+              )),
           keyboardType: TextInputType.number,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           cursorWidth: 3,
@@ -112,7 +119,7 @@ class _MovementStepperState extends State<MovementStepper> {
                 }
               })
             },
-        icon: Icon(Icons.where_to_vote)));
+        icon: Icon(Icons.check_circle_rounded)));
 
     return tfList;
   }
