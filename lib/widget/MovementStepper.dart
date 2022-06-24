@@ -151,7 +151,7 @@ class _MovementStepperState extends State<MovementStepper> {
           barrierDismissible: false,
           context: context,
           builder: (BuildContext context) {
-            return FeedbackDialog(new Text("Possible locations of Mr. X:"),
+            return FeedbackDialog(new Text("Mr. X is possibly at:",),
                 new Text(_formatAdvice(currentAdvice)));
           });
       setState(() {
