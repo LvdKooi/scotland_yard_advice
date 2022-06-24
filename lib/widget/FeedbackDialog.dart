@@ -15,6 +15,7 @@ class FeedbackDialog extends StatelessWidget {
         content: content,
         actions: [
           ElevatedButton(
+            style: ElevatedButton.styleFrom(primary: Colors.green),
             onPressed: () {
               Navigator.pop(context);
             },
