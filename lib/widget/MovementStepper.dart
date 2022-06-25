@@ -115,7 +115,7 @@ class _MovementStepperState extends State<MovementStepper> {
                   submitFunction(_index, _createMove());
                   _resetUserInputState();
                   Navigator.pop(context);
-                  _renderAdvice();
+                  _renderAdvice(_index);
                 }
               })
             },
@@ -143,16 +143,20 @@ class _MovementStepperState extends State<MovementStepper> {
     return Move(_move, _playerPositions.values.toSet());
   }
 
-  Future<void> _renderAdvice() async {
+  Future<void> _renderAdvice(int currentIndex) async {
     try {
       var currentAdvice = await getAdviceFunction.call();
-
       showDialog(
           barrierDismissible: false,
           context: context,
           builder: (BuildContext context) {
-            return FeedbackDialog(new Text("Mr. X is possibly at:",),
-                new Text(_formatAdvice(currentAdvice)));
+            return FeedbackDialog(
+                new Text(
+                  "Mr. X is possibly at:",
+                ),
+                new Text(_formatAdvice(currentAdvice)),
+                function:
+                    currentIndex == _MAX_STEPS ? this.resetFunction : null);
           });
       setState(() {
         if (_index != _MAX_STEPS) {
