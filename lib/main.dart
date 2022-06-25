@@ -63,9 +63,12 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: _title,
+      themeMode: ThemeMode.dark,
+      theme: ThemeData.dark(),
       home: Scaffold(
           appBar: AppBar(
             title: const Text(_title),
+            backgroundColor: Color.fromARGB(0, 0, 0, 0),
             actions: [
               IconButton(
                   onPressed: () => _resetState(), icon: Icon(Icons.refresh))
@@ -77,8 +80,15 @@ class _MyAppState extends State<MyApp> {
                 Center(
                     child: _startingPoint == 0
                         ? new TextField(
+                            cursorColor: Colors.white,
                             decoration: new InputDecoration(
                               labelText: "Last known position of Mr. X.",
+                              labelStyle: TextStyle(color: Colors.white),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: const BorderSide(
+                                  color: Colors.white,
+                                ),
+                              ),
                               errorText: _validate
                                   ? 'Invalid position (valid positions are in the range of 1-199).'
                                   : null,

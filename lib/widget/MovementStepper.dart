@@ -87,8 +87,15 @@ class _MovementStepperState extends State<MovementStepper> {
     var tfList = <Widget>[];
     for (var i = 0; i <= _MAX_PLAYERS; i++) {
       tfList.add(new TextField(
-          decoration:
-              new InputDecoration(labelText: "Player " + (i + 1).toString()),
+          cursorColor: Colors.white,
+          decoration: new InputDecoration(
+              labelText: "Player " + (i + 1).toString(),
+              labelStyle: TextStyle(color: Colors.grey),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: const BorderSide(
+                  color: Colors.white,
+                ),
+              )),
           keyboardType: TextInputType.number,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           cursorWidth: 3,
@@ -108,11 +115,11 @@ class _MovementStepperState extends State<MovementStepper> {
                   submitFunction(_index, _createMove());
                   _resetUserInputState();
                   Navigator.pop(context);
-                  _renderAdvice();
+                  _renderAdvice(_index);
                 }
               })
             },
-        icon: Icon(Icons.where_to_vote)));
+        icon: Icon(Icons.check_circle_rounded)));
 
     return tfList;
   }
@@ -136,16 +143,20 @@ class _MovementStepperState extends State<MovementStepper> {
     return Move(_move, _playerPositions.values.toSet());
   }
 
-  Future<void> _renderAdvice() async {
+  Future<void> _renderAdvice(int currentIndex) async {
     try {
       var currentAdvice = await getAdviceFunction.call();
-
       showDialog(
           barrierDismissible: false,
           context: context,
           builder: (BuildContext context) {
-            return FeedbackDialog(new Text("Possible locations of Mr. X:"),
-                new Text(_formatAdvice(currentAdvice)));
+            return FeedbackDialog(
+                new Text(
+                  "Mr. X is possibly at:",
+                ),
+                new Text(_formatAdvice(currentAdvice)),
+                function:
+                    currentIndex == _MAX_STEPS ? this.resetFunction : null);
           });
       setState(() {
         if (_index != _MAX_STEPS) {

@@ -29,6 +29,7 @@ class _StepInputState extends State<StepInput> {
           title: Text(element.name),
           visualDensity: VisualDensity.compact,
           leading: Radio<MeansOfTransportation>(
+            activeColor: Colors.green,
             value: element,
             groupValue: _means,
             onChanged: (MeansOfTransportation? value) {
