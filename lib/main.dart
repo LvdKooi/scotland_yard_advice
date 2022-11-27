@@ -23,7 +23,7 @@ class _MyAppState extends State<MyApp> {
   var _startingPoint = 0;
   var _moves = <Move>[];
   bool _validate = false;
-  late List<int> _currentAdvice;
+  late Future<List<int>> _currentAdvice;
 
   void _setStartingPoint(String position) {
     setState(() {
@@ -50,7 +50,7 @@ class _MyAppState extends State<MyApp> {
     _currentAdvice = adviceService.getPossibleLocations(_startingPoint, _moves);
   }
 
-  List<int> _getAdvice() {
+  Future<List<int>> _getAdvice() {
     return _currentAdvice;
   }
 

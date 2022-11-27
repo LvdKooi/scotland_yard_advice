@@ -145,7 +145,7 @@ class _MovementStepperState extends State<MovementStepper> {
 
   Future<void> _renderAdvice(int currentIndex) async {
     try {
-      var currentAdvice = getAdviceFunction.call();
+      var currentAdvice = await getAdviceFunction.call();
       showDialog(
           barrierDismissible: false,
           context: context,

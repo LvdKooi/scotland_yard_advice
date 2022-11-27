@@ -12,7 +12,8 @@ class AdviceService {
 
   AdviceService(this.nodeService);
 
-  List<int> getPossibleLocations(int startingPositions, List<Move> moves) {
+  Future<List<int>> getPossibleLocations(
+      int startingPositions, List<Move> moves) async {
     List<int> currentIds = [];
 
     Set<Node> currentNodes = HashSet<Node>();
@@ -46,8 +47,9 @@ class AdviceService {
     });
 
     if (nodesSet.isEmpty) {
+      var transportationName = transportation.name;
       throw WrongInputException(
-          "Mr. X made an illegal move: $transportation is not an option considering the possible nodes he passed by.");
+          "Mr. X made an illegal move: $transportationName is not an option considering the possible nodes he passed by.");
     }
     return nodesSet;
   }
