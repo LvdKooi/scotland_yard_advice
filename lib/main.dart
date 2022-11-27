@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:scotland_yard_advice/service/AdviceService.dart';
+import 'package:scotland_yard_advice/service/NodeService.dart';
 
-import 'client/AdviceClient.dart';
 import 'dto/Move.dart';
 import 'widget/MovementStepper.dart';
 
@@ -17,6 +18,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  AdviceService adviceService = AdviceService(NodeService());
   static const String _title = 'Scotland Yard Advice';
   var _startingPoint = 0;
   var _moves = <Move>[];
@@ -45,7 +47,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _fetchAdvice() {
-    _currentAdvice = getAdvice(_startingPoint, _moves);
+    _currentAdvice = adviceService.getPossibleLocations(_startingPoint, _moves);
   }
 
   Future<List<int>> _getAdvice() {
